@@ -1,0 +1,1 @@
+**.dmrc** is an initialization file which the system checks during session login. Specifically, gnome checks the file for any specific language or session information it hasn't located elsewhere
