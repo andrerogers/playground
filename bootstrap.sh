@@ -1,5 +1,13 @@
 #!/bin/bash
 
+useradd -m -s /bin/bash -U andre -u 666 --groups wheel
+cp -pr /home/vagrant/.ssh /home/andre/
+chown -R andre:andre /home/andre
+echo "%andre ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/andre
+passwd -d andre
+
+pacman -Sy --noconfirm which 
+
 # Install pacman-contrib package
 sudo pacman -S --noconfirm pacman-contrib
 
@@ -46,8 +54,9 @@ pacman -Sy --noconfirm inetutils git picom scrot imagemagick \
 # Install AUR helper
 pushd /tmp
 git clone https://aur.archlinux.org/yay.git
+chown -R andre yay
 pushd yay
-makepkg -si --noconfirm
+sudo -u andre makepkg -si --noconfirm
 popd
 rm -rf yay
 popd
@@ -56,7 +65,7 @@ popd
 pacman -Sy --noconfirm i3-wm
 
 # Install i3lock-fancy, for lockscreen
-yay -S --noconfirm betterlockscreen-git 
+sudo -u andre yay -S --noconfirm betterlockscreen-git 
 
 # Install fonts 
 pacman -S --noconfirm ttf-dejavu # i3 dependancy
@@ -70,7 +79,7 @@ pacman -Sy --noconfirm i3blocks
 # Terminal
 pacman -Sy --noconfirm rxvt-unicode
 # urxvt extensions
-yay -S --noconfirm urxvt-font-size-git
+sudo -u andre yay -S --noconfirm urxvt-font-size-git
 
 # Set urxvt extensions to the correct path
 mkdir -p /home/vagrant/.urxvt/ext
@@ -103,10 +112,16 @@ EOF
 # TODO
 # curl dot files config
 # link config to $HOME, i.e ln -sf $HOME/.cfg/linux/.config %HOME/.config
+curl -Lsk http://bit.do/initialize-linux | bash
+
+# Install emacs 
+pacman -Sy --noconfirm emacs 
+ln -sf /home/andre/.cfg/emacs/custom-file.el /home/andre/.emacs.d/ 
+ln -sf /home/andre/.cfg/emacs/init.el /home/andre/.emacs.el 
 
 # Configure xinitrc for i3
 # echo exec i3 > /home/vagrant/.xinitrc
-chown vagrant:vagrant /home/vagrant/.xinitrc
+chown andre:andre /home/andre/.xinitrc
 
 # TODO: test
 # Reboot to initialize changes

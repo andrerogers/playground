@@ -68,5 +68,8 @@ Vagrant.configure("2") do |config|
   #   apt-get update
   #   apt-get install -y apache2
   # SHELL
+
+  # config.ssh.username = "andre"
+  
   config.vm.provision "shell", path: "bootstrap.sh"
 end
