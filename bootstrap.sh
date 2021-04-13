@@ -116,7 +116,7 @@ curl -Lsk http://bit.do/initialize-linux | bash
 
 # Install emacs 
 pacman -Sy --noconfirm emacs 
-ln -sf /home/andre/.cfg/emacs/custom-file.el /home/andre/.emacs.d/ 
+ln -sf /home/andre/.cfg/emacs/.emacs.d /home/andre/.emacs.d 
 ln -sf /home/andre/.cfg/emacs/init.el /home/andre/.emacs.el 
 
 # Configure xinitrc for i3
