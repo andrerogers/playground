@@ -118,10 +118,11 @@ curl -Lsk http://bit.do/initialize-linux | bash
 pacman -Sy --noconfirm emacs 
 ln -sf /home/andre/.cfg/emacs/.emacs.d /home/andre/.emacs.d 
 ln -sf /home/andre/.cfg/emacs/init.el /home/andre/.emacs.el 
+# chown -R andre:andre /home/andre/.emacs.d
 
 # Configure xinitrc for i3
-# echo exec i3 > /home/vagrant/.xinitrc
-chown andre:andre /home/andre/.xinitrc
+# echo exec i3 > /home/$USER/.xinitrc
+chown -R andre:andre /home/andre/*
 
 # TODO: test
 # Reboot to initialize changes
