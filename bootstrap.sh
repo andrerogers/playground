@@ -6,10 +6,8 @@ chown -R andre:andre /home/andre
 echo "%andre ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/andre
 passwd -d andre
 
-pacman -Sy --noconfirm which 
-
 # Install pacman-contrib package
-sudo pacman -S --noconfirm pacman-contrib
+pacman -S --noconfirm pacman-contrib
 
 # Update mirrorlist
 wget archlinux.org/mirrorlist/?country=US –O /etc/pacman.d/mirrorlist 
@@ -18,34 +16,36 @@ wget archlinux.org/mirrorlist/?country=US –O /etc/pacman.d/mirrorlist
 sed -i 's/^#Server/Server/' /etc/pacman.d/mirrorlist 
 # rankmirrors –n 3 /etc/pacman.d/mirrorlist.bak > /etc/pacman.d/mirrorlist 
 
-# Update Arch database
-pacman -Syy
-
-# Update Arch
-pacman -Syu --noconfirm
-
 # Set clock
 timedatectl set-ntp true
 hwclock --systohc --localtime
 
+# Add user vagrant to video group
+gpasswd -a vagrant video
+
+# Update Arch database
+pacman -Syy
+
 # Remove package virtualbox-guest-utils-nox (VirtualBox Guest utilities without X support)
-pacman -Rsu --noconfirm virtualbox-guest-utils-nox
+# pacman -Rsu --noconfirm virtualbox-guest-utils-nox
+pacman -Rsu --noconfirm virtualbox-guest-dkms
+
+# Update Arch
+pacman -Syu --noconfirm
+
+# Install virtualbox-guest-utils (VirtualBox Guest utilities with X support)
+# pacman -Sy --noconfirm virtualbox-guest-iso
+# pacman -Sy --noconfirm virtualbox-guest-utils
+# pacman -Sy --noconfirm virtualbox-guest-dkms
 
 # Install xorg
+pacman -Sy --noconfirm binutils make gcc
+
 pacman -Sy --noconfirm xorg \
        xorg-server-xwayland xorg-server-common \
        xorg-server xorg-xinit \
        xf86-video-fbdev xf86-video-vesa \
        xorg-xrandr 
-
-# Add user vagrant to video group
-gpasswd -a vagrant video
-
-# Install virtualbox-guest-utils (VirtualBox Guest utilities with X support)
-pacman -Sy --noconfirm virtualbox-guest-iso
-pacman -Sy --noconfirm virtualbox-guest-utils
-pacman -Sy --noconfirm virtualbox-guest-dkms
-
 
 # Install utils
 pacman -Sy --noconfirm inetutils git picom scrot imagemagick \
@@ -109,25 +109,36 @@ Section "Screen"
 EndSection
 EOF
 
-# TODO
-# curl dot files config
-# link config to $HOME, i.e ln -sf $HOME/.cfg/linux/.config %HOME/.config
+# Install zsh
+pacman -Sy --noconfirm zsh
+
+# Change Shell 
+chsh -s /bin/zsh andre 
+
+# Install oh-my-zsh
+sudo -u andre bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" 
+
+# Install Powerlevel0k, oh-my-zsh dependency 
+git clone https://github.com/bhilburn/powerlevel9k.git /home/andre/.oh-my-zsh/custom/themes/powerlevel9k
+
 curl -Lsk http://bit.do/initialize-linux | bash
+
+# Configure xinitrc for i3
+echo exec i3 > /home/$USER/.xinitrc
+chown -R andre:andre /home/andre/.*
 
 # Install emacs 
 pacman -Sy --noconfirm emacs 
-ln -sf /home/andre/.cfg/emacs/.emacs.d /home/andre/.emacs.d 
-ln -sf /home/andre/.cfg/emacs/init.el /home/andre/.emacs.el 
+# ln -sf /home/andre/.cfg/emacs/.emacs.d /home/andre/.emacs.d 
+# ln -sf /home/andre/.cfg/emacs/init.el /home/andre/.emacs.el 
 # chown -R andre:andre /home/andre/.emacs.d
 
-# Configure xinitrc for i3
-# echo exec i3 > /home/$USER/.xinitrc
-chown -R andre:andre /home/andre/*
+# install docker
+pacman -Sy --noconfirm docker 
 
-# TODO: test
-# Reboot to initialize changes
+# Install anaconda to manage python environments 
+
+# Install nodejs and nvm 
+pacman -Sy --noconfirm npm nodejs 
+
 reboot
-
-# TODO: test
-# Start i3
-# [[ -z \$DISPLAY ]] && [[ \$(tty) = /dev/tty1 ]] && exec start
