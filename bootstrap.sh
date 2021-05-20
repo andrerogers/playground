@@ -121,7 +121,9 @@ sudo -u andre bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/oh
 # Install Powerlevel0k, oh-my-zsh dependency 
 git clone https://github.com/bhilburn/powerlevel9k.git /home/andre/.oh-my-zsh/custom/themes/powerlevel9k
 
-curl -Lsk http://bit.do/initialize-linux | bash
+curl -Lsk https://tinyurl.com/playground-setup > config.sh 
+bash config.sh andre
+rm config.sh
 
 # Configure xinitrc for i3
 echo exec i3 > /home/$USER/.xinitrc
