@@ -12,7 +12,8 @@ Vagrant.configure("2") do |config|
 
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://vagrantcloud.com/search.
-  config.vm.box = "generic/arch"
+  config.vm.box = "playground-arch"
+  config.define 'test'
 
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
@@ -52,7 +53,7 @@ Vagrant.configure("2") do |config|
   config.vm.provider "virtualbox" do |vb|
     # Display the VirtualBox GUI when booting the machine
     vb.gui = true
-    vb.name = "i3 Playground"
+    vb.name = "playground"
     vb.linked_clone = true
     vb.check_guest_additions = true
     vb.memory = "2048"
@@ -71,5 +72,5 @@ Vagrant.configure("2") do |config|
 
   # config.ssh.username = "andre"
   
-  config.vm.provision "shell", path: "bootstrap.sh"
+  config.vm.provision "shell", path: "bootstrap.sh"`
 end
