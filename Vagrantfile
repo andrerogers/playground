@@ -70,6 +70,6 @@ Vagrant.configure("2") do |config|
   #   apt-get install -y apache2
   # SHELL
 
-  config.vm.provision "file", source: ".\\key\\.", destination: "/home/vagrant/.ssh"
+  config.vm.provision "file", source: ".\\ssh\\.", destination: "/home/vagrant/.ssh"
   config.vm.provision "shell", path: "bootstrap.sh"
 end
