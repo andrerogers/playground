@@ -1,97 +1,76 @@
 #!/bin/bash
 
-useradd -m -s /bin/bash -U andre -u 666 --groups wheel
-cp -pr /home/vagrant/.ssh /home/andre/
-chown -R andre:andre /home/andre
-echo "%andre ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/andre
-passwd -d andre
+USER=senor-dre
 
-# Install pacman-contrib package
-pacman -S --noconfirm pacman-contrib
-
-# Update mirrorlist
-wget archlinux.org/mirrorlist/?country=US –O /etc/pacman.d/mirrorlist 
-# cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bak 
-# sed -i 's/^#Server/Server/' /etc/pacman.d/mirrorlist.bak 
-sed -i 's/^#Server/Server/' /etc/pacman.d/mirrorlist 
-# rankmirrors –n 3 /etc/pacman.d/mirrorlist.bak > /etc/pacman.d/mirrorlist 
+echo ">>>> bootstrap.sh: Setting ssh key.."
+mkdir -p /home/$USER/.ssh
+cp /home/vagrant/.ssh/* /home/$USER/.ssh/
+chmod -R 700 /home/$USER/.ssh
 
 # Set clock
+echo ">>>> bootstrap.sh: Setting clock.."
 timedatectl set-ntp true
 hwclock --systohc --localtime
 
-# Add user vagrant to video group
-gpasswd -a vagrant video
-
 # Update Arch database
+echo ">>>> bootstrap.sh: Updating pacman database.."
 pacman -Syy
 
-# Remove package virtualbox-guest-utils-nox (VirtualBox Guest utilities without X support)
-# pacman -Rsu --noconfirm virtualbox-guest-utils-nox
-pacman -Rsu --noconfirm virtualbox-guest-dkms
-
 # Update Arch
+echo ">>>> bootstrap.sh: Updating arch.."
 pacman -Syu --noconfirm
 
-# Install virtualbox-guest-utils (VirtualBox Guest utilities with X support)
-# pacman -Sy --noconfirm virtualbox-guest-iso
-# pacman -Sy --noconfirm virtualbox-guest-utils
-# pacman -Sy --noconfirm virtualbox-guest-dkms
+# Install packages
+echo ">>>> bootstrap.sh: Installing packages.."
+echo ">>>> bootstrap.sh: Installing util packages and libraries.."
+pacman -Sy --noconfirm inetutils binutils make git gcc \
+                       clang autoconf automake libtool w3m
 
-# Install xorg
-pacman -Sy --noconfirm binutils make gcc
-
+echo ">>>> bootstrap.sh: Installing Xorg.."
 pacman -Sy --noconfirm xorg \
        xorg-server-xwayland xorg-server-common \
        xorg-server xorg-xinit \
        xf86-video-fbdev xf86-video-vesa \
-       xorg-xrandr 
+       xorg-xrandr
 
-# Install utils
-pacman -Sy --noconfirm inetutils git picom scrot imagemagick \
-       autoconf automake libtool w3m
-
-# Install AUR helper
+echo ">>>> bootstrap.sh: Installing AUR Helper yay.."
 pushd /tmp
 git clone https://aur.archlinux.org/yay.git
-chown -R andre yay
+chown -R $USER yay
 pushd yay
-sudo -u andre makepkg -si --noconfirm
+sudo -u $USER makepkg -si --noconfirm
 popd
 rm -rf yay
 popd
 
-# Install i3
+echo ">>>> bootstrap.sh: Installing zsh.."
+pacman -Sy --noconfirm zsh
+
+echo ">>>> bootstrap.sh: Installing i3.."
 pacman -Sy --noconfirm i3-wm
 
-# Install i3lock-fancy, for lockscreen
-sudo -u andre yay -S --noconfirm betterlockscreen-git 
-
-# Install fonts 
+echo ">>>> bootstrap.sh: Installing i3 dependancy, dejavu font.."
 pacman -S --noconfirm ttf-dejavu # i3 dependancy
+
+echo ">>>> bootstrap.sh: Installing Fira Code font.."
 pacman -Sy --noconfirm ttf-fira-code
 fc-cache -f -v
 
-# Install i3 pre-requisites
-# Status Bar
-pacman -Sy --noconfirm i3blocks 
+echo ">>>> bootstrap.sh: Installing i3 utils.."
+pacman -Sy --noconfirm i3blocks picom scrot imagemagick \
+                       rxvt-unicode rofi ranger \
 
-# Terminal
-pacman -Sy --noconfirm rxvt-unicode
-# urxvt extensions
-sudo -u andre yay -S --noconfirm urxvt-font-size-git
+echo ">>>> bootstrap.sh: Installing i3 utils via yay.."
+sudo -u $USER yay -S --noconfirm betterlockscreen-git
+sudo -u $USER yay -S --noconfirm urxvt-font-size-git
 
-# Set urxvt extensions to the correct path
+
+echo ">>>> bootstrap.sh: Setting URXVT extension path.."
 mkdir -p /home/vagrant/.urxvt/ext
 cp -r /usr/lib/urxvt/perl/* /home/vagrant/.urxvt/ext/
 
-# Install run launcher
-pacman -Sy --noconfirm rofi
-
-# Install file manager 
-pacman -Sy --noconfirm ranger 
-
-# Configure xorg to set resolution to 1920X1080
+echo ">>>> bootstrap.sh: Configuring xorg to set resolution to 1920X1080.."
+echo ">>>> bootstrap.sh: Creating file /etc/X11/xorg.conf.d.."
 XORG_DIR="/etc/X11/xorg.conf.d"
 if [ -d "$XORG_DIR" ]; then
   echo "${XORG_DIR} found, setting screen resolution.."
@@ -100,6 +79,7 @@ else
   mkdir -p $XORG_DIR
 fi
 
+echo ">>>> bootstrap.sh: Creating file /etc/X11/10-set-screen.conf.."
 cat > $XORG_DIR/10-set-screen.conf <<EOF
 Section "Screen"
 	Identifier	"DisplayPort-0"
@@ -109,38 +89,36 @@ Section "Screen"
 EndSection
 EOF
 
-# Install zsh
-pacman -Sy --noconfirm zsh
+echo ">>>> bootstrap.sh: Installing OhMyZsh.."
+sudo -u $USER bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
-# Change Shell 
-chsh -s /bin/zsh andre 
+echo ">>>> bootstrap.sh: Installing powerlevel9k, ohmyzsh dependancy.."
+git clone https://github.com/bhilburn/powerlevel9k.git /home/$USER/.oh-my-zsh/custom/themes/powerlevel9k
 
-# Install oh-my-zsh
-sudo -u andre bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" 
-
-# Install Powerlevel0k, oh-my-zsh dependency 
-git clone https://github.com/bhilburn/powerlevel9k.git /home/andre/.oh-my-zsh/custom/themes/powerlevel9k
-
-curl -Lsk https://tinyurl.com/playground-setup > config.sh 
-bash config.sh andre
+echo ">>>> bootstrap.sh: Installing dot files.."
+#curl -Lsk https://tinyurl.com/playground-setup > config.sh
+curl -Lsk https://bitbucket.org/!api/2.0/snippets/dre-codes/yXreX6/e6411aa6cee93179a70b605c2676fbd4ef48118c/files/bootstrap.sh > config.sh
+bash config.sh $USER
 rm config.sh
 
-# Configure xinitrc for i3
+echo ">>>> bootstrap.sh: Configuring .xinitrc.."
 echo exec i3 > /home/$USER/.xinitrc
-chown -R andre:andre /home/andre/.*
+chown -R $USER:$USER /home/$USER/.*
 
-# Install emacs 
-pacman -Sy --noconfirm emacs 
-# ln -sf /home/andre/.cfg/emacs/.emacs.d /home/andre/.emacs.d 
-# ln -sf /home/andre/.cfg/emacs/init.el /home/andre/.emacs.el 
-# chown -R andre:andre /home/andre/.emacs.d
+echo ">>>> bootstrap.sh: Install Emacs IDE.."
+pacman -Sy --noconfirm emacs
+echo "alias e=emacs -l ~/.cfg/emacs/emacs-fresh.el" >> /home/$USER/.zshrc
 
 # install docker
-pacman -Sy --noconfirm docker 
+# pacman -Sy --noconfirm docker
 
-# Install anaconda to manage python environments 
+# Install anaconda to manage python environments
 
-# Install nodejs and nvm 
-pacman -Sy --noconfirm npm nodejs 
+# Install nodejs and nvm
+# pacman -Sy --noconfirm npm nodejs
 
+echo ">>>> bootstrap.sh: Changing shell to zsh.."
+chsh -s /bin/zsh $USER
+
+echo ">>>> bootstrap.sh: Rebooting.."
 reboot

@@ -1,2 +1,8 @@
 .vagrant
+packer_cache
 shared
+id_rsa
+id_rsa.pub
+*.pub
+known_hosts
+output
