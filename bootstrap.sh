@@ -3,9 +3,16 @@
 USER=senor-dre
 
 echo ">>>> bootstrap.sh: Setting ssh key.."
-mkdir -p /home/$USER/.ssh
-cp /home/vagrant/.ssh/* /home/$USER/.ssh/
+cp -r /home/vagrant/.ssh /root/
+cp /home/vagrant/.ssh /home/$USER/
+
+cat /root/.ssh/git.pub >  /root/authorized_keys
+cat /home/$USER/.ssh/git.pub >>  /home/$USER/.ssh/authorized_keys
+
+chmod -R 700 /root/.ssh
 chmod -R 700 /home/$USER/.ssh
+
+#systemctl restart sshd
 
 # Set clock
 echo ">>>> bootstrap.sh: Setting clock.."
@@ -97,7 +104,7 @@ git clone https://github.com/bhilburn/powerlevel9k.git /home/$USER/.oh-my-zsh/cu
 
 echo ">>>> bootstrap.sh: Installing dot files.."
 #curl -Lsk https://tinyurl.com/playground-setup > config.sh
-curl -Lsk https://bitbucket.org/!api/2.0/snippets/dre-codes/yXreX6/e6411aa6cee93179a70b605c2676fbd4ef48118c/files/bootstrap.sh > config.sh
+curl -Lsk https://tinyurl.com/test-setup-linux > config.sh
 bash config.sh $USER
 rm config.sh
 

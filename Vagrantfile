@@ -70,6 +70,21 @@ Vagrant.configure("2") do |config|
   #   apt-get install -y apache2
   # SHELL
 
+  #config.vm.provision "shell" do |s|
+  #  ssh_priv_key = File.readlines(".\\ssh\\id_rsa").first.strip
+  #  ssh_pub_key = File.readlines(".\\ssh\\id_rsa.pub").first.strip
+  #  s.inline = <<-SHELL
+  #    echo #{ssh_priv_key} > /home/senor-dre/.ssh/git
+  #    echo #{ssh_pub_key} > /home/senor-dre/.ssh/git.pub
+  #    echo #{ssh_pub_key} >> /home/senor-dre/.ssh/authorized_keys
+  #  SHELL
+  #end
+
+  #config.ssh.private_key_path = ".\\ssh\\id_rsa"
+
   config.vm.provision "file", source: ".\\ssh\\.", destination: "/home/vagrant/.ssh"
   config.vm.provision "shell", path: "bootstrap.sh"
+  # trigger reload
+  #config.vm.provision :reload
+  #config.vm.provision "shell", path: "configure.sh"
 end
