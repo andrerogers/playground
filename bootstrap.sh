@@ -130,7 +130,8 @@ echo exec i3 > /home/$USER/.xinitrc
 chown -R andre:andre /home/andre/.*
 
 # Install emacs 
-pacman -Sy --noconfirm emacs 
+pacman -Sy --noconfirm emacs ripgrep
+
 # ln -sf /home/andre/.cfg/emacs/.emacs.d /home/andre/.emacs.d 
 # ln -sf /home/andre/.cfg/emacs/init.el /home/andre/.emacs.el 
 # chown -R andre:andre /home/andre/.emacs.d
