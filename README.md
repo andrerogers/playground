@@ -14,4 +14,4 @@ should be good to clone this repo and go:
 
 Then import the generated box into Vagrant:
 
-    $ vagrant box add arch output/packer_arch_virtualbox.box
+    $ vagrant box add arch output/playground.box
