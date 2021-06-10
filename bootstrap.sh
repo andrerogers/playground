@@ -76,7 +76,6 @@ echo ">>>> bootstrap.sh: Setting URXVT extension path.."
 mkdir -p /home/vagrant/.urxvt/ext
 cp -r /usr/lib/urxvt/perl/* /home/vagrant/.urxvt/ext/
 
-echo ">>>> bootstrap.sh: Configuring xorg to set resolution to 1920X1080.."
 echo ">>>> bootstrap.sh: Creating file /etc/X11/xorg.conf.d.."
 XORG_DIR="/etc/X11/xorg.conf.d"
 if [ -d "$XORG_DIR" ]; then
@@ -90,9 +89,9 @@ echo ">>>> bootstrap.sh: Creating file /etc/X11/10-set-screen.conf.."
 cat > $XORG_DIR/10-set-screen.conf <<EOF
 Section "Screen"
 	Identifier	"DisplayPort-0"
+	Modeline        "3840x2160_60.00"  108.88  3840 1920 1280 1360 1496 1712  2160 1080 1024 1025 1028 1060  -HSync +Vsync
+    	Option          "PreferredMode" "3840x2160_60.00"
 	Option		"Primary" "true"
-	Option		"PreferredMode" "true"
-	Option		"Position" "1200 0"
 EndSection
 EOF
 
@@ -114,6 +113,18 @@ chown -R $USER:$USER /home/$USER/.*
 
 echo ">>>> bootstrap.sh: Install Emacs IDE.."
 pacman -Sy --noconfirm emacs
+ln -sf /home/$USER/.cfg/emacs/emacs_fresh.el /home/$USER/.emacs.el
+
+echo ">>>> bootstrap.sh: Starting Emacs in daemon mode [server].."
+systemctl --user enable emacs
+
+echo ">>>> bootstrap.sh: Install Emacs Tools (Plugin Pre-reequistes).."
+pacman -Sy --noconfirm ripgrep
+
+echo ">>>> bootstrap.sh: Install TMUX.."
+pacman -Sy --noconfirm tmux
+ln -sf /home/$USER/.cfg/linux/.tmux/.tmux.conf /home/$USER/.tmux.conf
+ln -sf /home/$USER/.cfg/linux/.tmux/.tmux.conf.local /home/$USER/.tmux.conf.local
 
 # install docker
 # pacman -Sy --noconfirm docker
