@@ -6,7 +6,7 @@ Usage
 
 ### VirtualBox Provider
 
-Install Packer, [VirtualBox](https://www.virtualbox.org/), and Vagrant
+Install [Packer](https://www.packer.io/downloads), [VirtualBox](https://www.virtualbox.org/), and [Vagrant](https://www.vagrantup.com/downloads)
 should be good to clone this repo and go:
 
     $ git clone https://github.com/elasticdog/packer-arch.git
