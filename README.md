@@ -10,7 +10,7 @@ Install [Packer](https://www.packer.io/downloads), [VirtualBox](https://www.virt
 should be good to clone this repo and go:
 
     $ cd playground/
-    $ packer build -only=virtualbox-iso arch-template.json
+    $ packer build -only=virtualbox-iso template.json
 
 Then import the generated box into Vagrant:
 
