@@ -114,7 +114,6 @@ chown -R $USER:$USER /home/$USER/.*
 
 echo ">>>> bootstrap.sh: Install Emacs IDE.."
 pacman -Sy --noconfirm emacs
-echo "alias e=emacs -l ~/.cfg/emacs/emacs-fresh.el" >> /home/$USER/.zshrc
 
 # install docker
 # pacman -Sy --noconfirm docker
@@ -126,6 +125,9 @@ echo "alias e=emacs -l ~/.cfg/emacs/emacs-fresh.el" >> /home/$USER/.zshrc
 
 echo ">>>> bootstrap.sh: Changing shell to zsh.."
 chsh -s /bin/zsh $USER
+
+echo ">>>> bootstrap.sh: Hot-load zsdh env.."
+source /home/$USER/.zshrc
 
 echo ">>>> bootstrap.sh: Rebooting.."
 reboot
