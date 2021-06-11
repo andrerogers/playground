@@ -89,8 +89,8 @@ echo ">>>> bootstrap.sh: Creating file /etc/X11/10-set-screen.conf.."
 cat > $XORG_DIR/10-set-screen.conf <<EOF
 Section "Screen"
 	Identifier	"DisplayPort-0"
-	Modeline        "3840x2160_60.00"  108.88  3840 1920 1280 1360 1496 1712  2160 1080 1024 1025 1028 1060  -HSync +Vsync
-    	Option          "PreferredMode" "3840x2160_60.00"
+#	Modeline        "3840x2160_60.00"  108.88  3840 1920 1280 1360 1496 1712  2160 1080 1024 1025 1028 1060  -HSync +Vsync
+#    	Option          "PreferredMode" "3840x2160_60.00"
 	Option		"Primary" "true"
 EndSection
 EOF
