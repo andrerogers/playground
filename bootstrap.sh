@@ -2,6 +2,12 @@
 
 USER=senor-dre
 
+# Setting $USER to sudoless
+echo ">>>> bootstrap.sh: Setting $USER as super-user.."
+sudo echo "$USER ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/%USER 
+sudo chmod 0400 /etc/sudoers.d/senor-dre
+usermod -a -G sudo senor-dre
+
 echo ">>>> bootstrap.sh: Setting ssh key.."
 cp -r /home/vagrant/.ssh /root/
 cp /home/vagrant/.ssh /home/$USER/
@@ -11,8 +17,6 @@ cat /home/$USER/.ssh/git.pub >>  /home/$USER/.ssh/authorized_keys
 
 chmod -R 700 /root/.ssh
 chmod -R 700 /home/$USER/.ssh
-
-#systemctl restart sshd
 
 # Set clock
 echo ">>>> bootstrap.sh: Setting clock.."
@@ -89,8 +93,8 @@ echo ">>>> bootstrap.sh: Creating file /etc/X11/10-set-screen.conf.."
 cat > $XORG_DIR/10-set-screen.conf <<EOF
 Section "Screen"
 	Identifier	"DisplayPort-0"
-#	Modeline        "3840x2160_60.00"  108.88  3840 1920 1280 1360 1496 1712  2160 1080 1024 1025 1028 1060  -HSync +Vsync
-#    	Option          "PreferredMode" "3840x2160_60.00"
+	# Modeline        "3840x2160_60.00"  108.88  3840 1920 1280 1360 1496 1712  2160 1080 1024 1025 1028 1060  -HSync +Vsync
+  # Option          "PreferredMode" "3840x2160_60.00"
 	Option		"Primary" "true"
 EndSection
 EOF
@@ -137,8 +141,8 @@ ln -sf /home/$USER/.cfg/linux/.tmux/.tmux.conf.local /home/$USER/.tmux.conf.loca
 echo ">>>> bootstrap.sh: Changing shell to zsh.."
 chsh -s /bin/zsh $USER
 
-echo ">>>> bootstrap.sh: Hot-load zsdh env.."
-source /home/$USER/.zshrc
+# echo ">>>> bootstrap.sh: Hot-load zsh env.."
+# source /home/$USER/.zshrc
 
 echo ">>>> bootstrap.sh: Rebooting.."
 reboot
