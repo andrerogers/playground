@@ -1,27 +1,33 @@
-#!/bin/bash
+#!/bin/bash -eux
 
-USER=senor-dre
+USER=codeshinobi
+PASS=ninja
 
-# Setting $USER to sudoless
-echo ">>>> bootstrap.sh: Setting $USER as super-user.."
-sudo echo "$USER ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/%USER 
-sudo chmod 0400 /etc/sudoers.d/senor-dre
-usermod -a -G sudo senor-dre
+usermod -a -G sudo $USER 
+echo -e '$USER\n$PASS' | passwd
+useradd -m -U $USER 
+echo -e '$USER\n$PASS' | passwd $PASS 
+cat <<-EOF > /etc/sudoers.d/$USER
+Defaults:$USER !requiretty
+$USER ALL=(ALL) NOPASSWD: ALL
+EOF
+chmod 440 /etc/sudoers.d/$USER
+
+echo ">>>> bootstrap.sh: Enabling VirtualBox Shared Folders for $USER.."
+/usr/bin/usermod --append --groups vagrant,vboxsf $USER
 
 echo ">>>> bootstrap.sh: Setting ssh key.."
-cp -r /home/vagrant/.ssh /root/
-cp /home/vagrant/.ssh /home/$USER/
+# cp -r /home/vagrant/.ssh /root/
+cp -r /home/vagrant/.ssh /home/$USER/
+cat /home/$USER/.ssh/id_rsa.pub > authorized_keys
 
-cat /root/.ssh/git.pub >  /root/authorized_keys
-cat /home/$USER/.ssh/git.pub >>  /home/$USER/.ssh/authorized_keys
-
-chmod -R 700 /root/.ssh
-chmod -R 700 /home/$USER/.ssh
+# chmod -R 700 /root/.ssh
+chmod -R 600 /home/$USER/.ssh
 
 # Set clock
-echo ">>>> bootstrap.sh: Setting clock.."
-timedatectl set-ntp true
-hwclock --systohc --localtime
+# echo ">>>> bootstrap.sh: Setting clock.."
+# timedatectl set-ntp true
+# hwclock --systohc --localtime
 
 # Update Arch database
 echo ">>>> bootstrap.sh: Updating pacman database.."
@@ -77,8 +83,8 @@ sudo -u $USER yay -S --noconfirm urxvt-font-size-git
 
 
 echo ">>>> bootstrap.sh: Setting URXVT extension path.."
-mkdir -p /home/vagrant/.urxvt/ext
-cp -r /usr/lib/urxvt/perl/* /home/vagrant/.urxvt/ext/
+mkdir -p /home/$USER/.urxvt/ext
+cp -r /usr/lib/urxvt/perl/* /home/$USER/.urxvt/ext/
 
 echo ">>>> bootstrap.sh: Creating file /etc/X11/xorg.conf.d.."
 XORG_DIR="/etc/X11/xorg.conf.d"

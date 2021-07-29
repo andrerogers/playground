@@ -1,0 +1,7 @@
+{
+    "Author": "Andre Rogers",
+    "Website": "https://github.com/andrerogers",
+    "Artifacts": "https://github.com/andrerogers",
+    "Repository": "https://github.com/andrerogers/playground",
+    "Description": "Basic virtual machine images, for my custom arch environment. Based on configurations described by https://roboxes.org/ and https://github.com/elasticdog/packer-arch"
+}
