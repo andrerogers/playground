@@ -65,8 +65,8 @@ Vagrant.configure("2") do |config|
   #  SHELL
   #end
 
-  config.ssh.private_key_path = ".\\ssh\\id_rsa"
-  config.ssh.forward_agent = true
+  # config.ssh.private_key_path = ".\\ssh\\id_rsa"
+  # config.ssh.forward_agent = true
 
   config.vm.provision "file", source: ".\\ssh\\.", destination: "/home/vagrant/.ssh"
   config.vm.provision "shell", path: "bootstrap.sh"

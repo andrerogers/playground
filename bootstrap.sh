@@ -1,6 +1,6 @@
 #!/bin/bash -eux
 
-USER=codeshinobi
+USER=sensei-dre
 PASS=ninja
 
 usermod -a -G sudo $USER 

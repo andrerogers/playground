@@ -1,7 +1,6 @@
 #!/bin/bash -eux
 
 echo ">>>> playground.arch.vagrant.sh: Exporting storage device.."
-
 if [ -e /dev/vda ]; then
   DISK=/dev/vda
 elif [ -e /dev/sda ]; then

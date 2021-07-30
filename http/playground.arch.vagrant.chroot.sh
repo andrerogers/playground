@@ -1,7 +1,7 @@
 #!/bin/bash -eux
 
-echo ">>>> playground.arch.vagrant.sh: Adding hostname, playground.vagrant.."
-echo "playground.dre-codes" > /etc/hostname
+echo ">>>> playground.arch.vagrant.sh: Adding hostname, playground.codelazy.."
+echo "playground.codelazy" > /etc/hostname
 
 echo ">>>> playground.arch.vagrant.sh: Configuring time, keymap, and locale.."
 ln -sf /usr/share/zoneinfo/UTC /etc/localtime
@@ -15,8 +15,8 @@ sed -i -e 's/^#default_options=""/default_options="-S autodetect"/g' /etc/mkinit
 mkinitcpio -p linux
 
 echo ">>>> playground.arch.vagrant.sh: Adding user vagrant.."
-usermod -a -G sudo vagrant 
-echo -e 'vagrantUSER\nvagrant' | passwd
+# usermod -a -G sudo vagrant 
+echo -e 'vagrant\nvagrant' | passwd
 useradd -m -U vagrant 
 echo -e 'vagrant\nvagrant' | passwd vagrant 
 cat <<-EOF > /etc/sudoers.d/vagrant
@@ -25,9 +25,8 @@ vagrant ALL=(ALL) NOPASSWD: ALL
 EOF
 chmod 440 /etc/sudoers.d/vagrant
 
-echo ">>>> playground.arch.vagrant.sh: Configuring ssh access for user vagrant.."
-
-install --directory --owner=vagrant --group=vagrant --mode=0700 /home/vagrant/.ssh
+# echo ">>>> playground.arch.vagrant.sh: Configuring ssh access for user vagrant.."
+# install --directory --owner=vagrant --group=vagrant --mode=0700 /home/vagrant/.ssh
 # /usr/bin/curl --output /home/vagrant/.ssh/authorized_keys --location https://raw.github.com/mitchellh/vagrant/master/keys/vagrant.pub
 # /usr/bin/chown vagrant:vagrant /home/vagrant/.ssh/authorized_keys
 # /usr/bin/chmod 0600 /home/vagrant/.ssh/authorized_keys
@@ -85,8 +84,4 @@ echo ">>>> playground.arch.vagrant.sh: install grub.."
 grub-install "$DISK"
 grub-mkconfig -o /boot/grub/grub.cfg
 
-cd /home/vagrant/
-
-KERN=`uname -r | awk -F'-' '{print $1}' | sed -e 's/\.0$//g'`
-echo ">>>> playground.arch.vagrant.sh: $KERN.."
 echo ">>>> playground.arch.vagrant.sh: Complete.."
