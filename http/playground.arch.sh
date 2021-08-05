@@ -64,17 +64,24 @@ usermod -a -G wheel ${CONFIG_USER}
 sed '/^# %wheel ALL=(ALL) ALL/ s/^# //' -i /etc/sudoers
 install --directory --owner=${CONFIG_USER} --group=${CONFIG_USER} --mode=0700 /home/${CONFIG_USER}/.ssh
 
-echo -e 'vagrant\nvagrant' | passwd
-useradd -m -U vagrant
-echo -e 'vagrant\nvagrant' | passwd vagrant
-echo 'Defaults env_keep += "SSH_AUTH_SOCK"' > /etc/sudoers.d/vagrant
-echo 'Defaults:vagrant !requiretty' >> /etc/sudoers.d/vagrant
-echo 'vagrant ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers.d/vagrant
-chmod 440 /etc/sudoers.d/vagrant
+useradd -m -p \$(openssl passwd "packer") vagrant 
+usermod -a -G wheel vagrant 
+install --directory --owner=vagrant --group=vagrant --mode=0700 /home/vagrant/.ssh
 
+sed -i -e "s/.*PermitRootLogin.*/PermitRootLogin yes/g" /etc/ssh/sshd_config
 echo 'UseDNS no' >> /etc/ssh/sshd_config
-ln -sf /dev/null /etc/systemd/network/99-default.link
+
+mkdir -p /etc/systemd/network
 ln -sf /dev/null /etc/udev/rules.d/80-net-setup-link.rules
+ln -sf /dev/null /etc/systemd/network/99-default.link
+
+cat <<NET > /etc/systemd/network/eth0.network
+[Match]
+Name=eth0
+
+[Network]
+DHCP=ipv4
+NET
 
 systemctl enable dhcpcd@eth0.service
 systemctl enable systemd-networkd
@@ -95,7 +102,7 @@ umount ${TARGET_DIR}
 
 # Turning network interfaces down to make sure SSH session was dropped on host.
 # More info at: https://www.packer.io/docs/provisioners/shell.html#handling-reboots
-# echo '==> Turning down network interfaces and rebooting'
-# for i in $(/usr/bin/netstat -i | /usr/bin/tail +3 | /usr/bin/awk '{print $1}'); do /usr/bin/ip link set ${i} down; done
+# echo ">>>> install-base.sh: Turning down network interfaces and rebooting.."
+for i in $(ip -o link show | awk -F': ' '{print $2}'); do if [ $i != "lo" ]; then ip link set $i down; fi; done
 
 reboot

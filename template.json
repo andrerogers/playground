@@ -39,8 +39,8 @@
       "ssh_port": 22,
       "ssh_timeout": "3600s",
       "shutdown_command": "echo 'root' | sudo -S shutdown -P now",
-      "guest_additions_url": "https://download.virtualbox.org/virtualbox/6.1.22/VBoxGuestAdditions_6.1.22.iso",
-      "guest_additions_sha256": "bffc316a7b8d5ed56d830e9f6aef02b4e5ffc28674032142e96ffbedd905f8c9",
+      "guest_additions_url": "{{ user `guest_additions_url` }}",
+      "guest_additions_sha256": "{{  user `guest_additions_sha256`  }}",
       "headless": "false",
       "virtualbox_version_file": "VBoxVersion.txt"
     }
@@ -49,11 +49,9 @@
     {
       "type": "shell",
       "scripts": ["http/playground.arch.sh"],
-      "timeout": "120m",
-      "start_retry_timeout": "15m",
       "expect_disconnect": true,
-      "execute_command": "{{ .Vars }} sudo -E -S bash '{{ .Path }}'",
-      "environment_vars": ["CONFIG_USER={{ user `config_user` }}"]
+      "environment_vars": ["CONFIG_USER={{ user `config_user` }}"],
+      "execute_command": "echo packer | {{ .Vars }} sudo -E -S bash '{{ .Path }}'"
     },
     {
       "type": "shell",
@@ -62,11 +60,9 @@
         "provisioners/sshd.sh",
         "provisioners/cleanup.sh"
       ],
-      "timeout": "120m",
-      "pause_before": "120s",
-      "start_retry_timeout": "15m",
-      "execute_command": "{{ .Vars }} sudo -E -S bash '{{ .Path }}'",
-      "environment_vars": ["CONFIG_USER={{ user `config_user` }}"]
+      "pause_before": "180s",
+      "environment_vars": ["CONFIG_USER={{ user `config_user` }}"],
+      "execute_command": "echo packer | {{ .Vars }} sudo -E -S bash '{{ .Path }}'"
     }
   ],
   "post-processors": [

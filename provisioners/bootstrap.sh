@@ -1,17 +1,16 @@
 #!/bin/bash -eux
 
 USER=sensei-dre
-PASS=ninja
 
-usermod -a -G sudo $USER 
-echo -e '$USER\n$PASS' | passwd
-useradd -m -U $USER 
-echo -e '$USER\n$PASS' | passwd $PASS 
-cat <<-EOF > /etc/sudoers.d/$USER
-Defaults:$USER !requiretty
-$USER ALL=(ALL) NOPASSWD: ALL
-EOF
-chmod 440 /etc/sudoers.d/$USER
+# usermod -a -G sudo $USER 
+# echo -e '$USER\n$PASS' | passwd
+# useradd -m -U $USER 
+# echo -e '$USER\n$PASS' | passwd $PASS 
+# cat <<-EOF > /etc/sudoers.d/$USER
+# Defaults:$USER !requiretty
+# $USER ALL=(ALL) NOPASSWD: ALL
+# EOF
+# chmod 440 /etc/sudoers.d/$USER
 
 echo ">>>> bootstrap.sh: Enabling VirtualBox Shared Folders for $USER.."
 /usr/bin/usermod --append --groups vagrant,vboxsf $USER

@@ -69,7 +69,7 @@ Vagrant.configure("2") do |config|
   # config.ssh.forward_agent = true
 
   config.vm.provision "file", source: ".\\ssh\\.", destination: "/home/vagrant/.ssh"
-  config.vm.provision "shell", path: "bootstrap.sh"
+  config.vm.provision "shell", path: ".\\provisioners\\bootstrap.sh"
 
   # Setting up for multi-machine
   # config.define "base" do |base|
