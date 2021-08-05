@@ -4,12 +4,13 @@
     "iso_checksum_url": "https://mirrors.kernel.org/archlinux/iso/{{isotime \"2006.01\"}}.01/sha1sums.txt",
     "guest_additions_url": "https://download.virtualbox.org/virtualbox/6.1.22/VBoxGuestAdditions_6.1.22.iso",
     "guest_additions_sha256": "bffc316a7b8d5ed56d830e9f6aef02b4e5ffc28674032142e96ffbedd905f8c9",
-    "country": "US",
+    "config_hostname": "playground",
     "config_user": "sensei-dre",
     "config_zoneinfo": "America/New_York",
     "config_country": "US",
     "config_disk_size": "20000",
     "config_memory": "2048",
+    "config_vram": "64",
     "config_cpus": "2"
   },
   "builders": [
@@ -29,10 +30,12 @@
         "echo root:packer | chpasswd<enter>",
         "systemctl start sshd<enter>"
       ],
-      "cpus": 2,
-      "memory": 2048,
-      "vboxmanage": [["modifyvm", "{{.Name}}", "--vram", "64"]],
-      "disk_size": 20480,
+      "cpus": "{{ user `config_cpus` }}",
+      "memory": "{{ user `config_memory` }}",
+      "disk_size": "{{ user `config_disk_size` }}",
+      "vboxmanage": [
+        ["modifyvm", "{{.Name}}", "--vram", "{{ user `config_vram` }}"]
+      ],
       "hard_drive_interface": "sata",
       "ssh_username": "root",
       "ssh_password": "packer",
@@ -50,7 +53,12 @@
       "type": "shell",
       "scripts": ["http/playground.arch.sh"],
       "expect_disconnect": true,
-      "environment_vars": ["CONFIG_USER={{ user `config_user` }}"],
+      "environment_vars": [
+        "HOSTNAME={{ user `config_hostname` }}",
+        "CONFIG_USER={{ user `config_user` }}",
+        "COUNTRY={{ user `config_country` }}",
+        "CONFIG_ZONE_INFO={{ user `config_zoneinfo` }}"
+      ],
       "execute_command": "echo packer | {{ .Vars }} sudo -E -S bash '{{ .Path }}'"
     },
     {
@@ -61,7 +69,12 @@
         "provisioners/cleanup.sh"
       ],
       "pause_before": "180s",
-      "environment_vars": ["CONFIG_USER={{ user `config_user` }}"],
+      "environment_vars": [
+        "HOSTNAME={{ user `config_hostname` }}",
+        "CONFIG_USER={{ user `config_user` }}",
+        "COUNTRY={{ user `config_country` }}",
+        "CONFIG_ZONE_INFO={{ user `config_zoneinfo` }}"
+      ],
       "execute_command": "echo packer | {{ .Vars }} sudo -E -S bash '{{ .Path }}'"
     }
   ],
@@ -70,6 +83,7 @@
       "type": "vagrant",
       "compression_level": 9,
       "keep_input_artifact": false,
+      "vagrantfile_template": "arch_vagrant.rb",
       "output": "output/playground_arch_{{ .Provider }}-{{isotime \"2006.01\"}}.01.box"
     }
   ]

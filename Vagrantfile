@@ -3,6 +3,11 @@
 # Vagrantfile - One development machine to rule them all.
 
 Vagrant.configure("2") do |config|
+  config.ssh.username = "root"
+  config.ssh.password = "packer" 
+  # config.ssh.private_key_path = ".\\ssh\\id_rsa"
+  # config.ssh.forward_agent = true
+
   config.vm.box = "playground"
 
   # Disable automatic box update checking. If you disable this, then
@@ -65,11 +70,15 @@ Vagrant.configure("2") do |config|
   #  SHELL
   #end
 
-  # config.ssh.private_key_path = ".\\ssh\\id_rsa"
-  # config.ssh.forward_agent = true
+  config.vm.provision "file" do |vb|
+    vb.source = ".\\ssh\\."
+    vb.destination = "/root/.ssh"
+  end
 
-  config.vm.provision "file", source: ".\\ssh\\.", destination: "/home/vagrant/.ssh"
-  config.vm.provision "shell", path: ".\\provisioners\\bootstrap.sh"
+  config.vm.provision "shell" do |vb| 
+    vb.path = ".\\provisioners\\bootstrap.sh"
+    vb.env = {"USER" => "sensei-dre"}
+  end
 
   # Setting up for multi-machine
   # config.define "base" do |base|

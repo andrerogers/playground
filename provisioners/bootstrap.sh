@@ -1,32 +1,16 @@
 #!/bin/bash -eux
 
-USER=sensei-dre
-
-# usermod -a -G sudo $USER 
-# echo -e '$USER\n$PASS' | passwd
-# useradd -m -U $USER 
-# echo -e '$USER\n$PASS' | passwd $PASS 
-# cat <<-EOF > /etc/sudoers.d/$USER
-# Defaults:$USER !requiretty
-# $USER ALL=(ALL) NOPASSWD: ALL
-# EOF
-# chmod 440 /etc/sudoers.d/$USER
-
-echo ">>>> bootstrap.sh: Enabling VirtualBox Shared Folders for $USER.."
-/usr/bin/usermod --append --groups vagrant,vboxsf $USER
-
 echo ">>>> bootstrap.sh: Setting ssh key.."
-# cp -r /home/vagrant/.ssh /root/
-cp -r /home/vagrant/.ssh /home/$USER/
+mv /root/.ssh /home/$USER/
 cat /home/$USER/.ssh/id_rsa.pub > authorized_keys
 
 # chmod -R 700 /root/.ssh
 chmod -R 600 /home/$USER/.ssh
 
 # Set clock
-# echo ">>>> bootstrap.sh: Setting clock.."
-# timedatectl set-ntp true
-# hwclock --systohc --localtime
+echo ">>>> bootstrap.sh: Setting clock.."
+timedatectl set-ntp true
+hwclock --systohc --localtime
 
 # Update Arch database
 echo ">>>> bootstrap.sh: Updating pacman database.."
@@ -49,12 +33,17 @@ pacman -Sy --noconfirm xorg \
        xf86-video-fbdev xf86-video-vesa \
        xorg-xrandr
 
+# Install languages 
+echo ">>>> bootstrap.sh: Install languages.."
+pacman -Sy --noconfirm npm nodejs go
+
 echo ">>>> bootstrap.sh: Installing AUR Helper yay.."
 pushd /tmp
 git clone https://aur.archlinux.org/yay.git
 chown -R $USER yay
 pushd yay
-sudo -u $USER makepkg -si --noconfirm
+# sudo -u $USER makepkg -si --noconfirm
+echo packer | sudo -S -u $USER makepkg -si --noconfirm
 popd
 rm -rf yay
 popd
@@ -79,7 +68,6 @@ pacman -Sy --noconfirm i3blocks picom scrot imagemagick \
 echo ">>>> bootstrap.sh: Installing i3 utils via yay.."
 sudo -u $USER yay -S --noconfirm betterlockscreen-git
 sudo -u $USER yay -S --noconfirm urxvt-font-size-git
-
 
 echo ">>>> bootstrap.sh: Setting URXVT extension path.."
 mkdir -p /home/$USER/.urxvt/ext
@@ -140,14 +128,17 @@ ln -sf /home/$USER/.cfg/linux/.tmux/.tmux.conf.local /home/$USER/.tmux.conf.loca
 
 # Install anaconda to manage python environments
 
-# Install nodejs and nvm
-# pacman -Sy --noconfirm npm nodejs
+# Install NVM
 
 echo ">>>> bootstrap.sh: Changing shell to zsh.."
 chsh -s /bin/zsh $USER
 
 # echo ">>>> bootstrap.sh: Hot-load zsh env.."
 # source /home/$USER/.zshrc
+
+
+echo ">>>> bootstrap.sh: disable root.."
+passwd -l root
 
 echo ">>>> bootstrap.sh: Rebooting.."
 reboot
