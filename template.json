@@ -1,113 +1,80 @@
 {
-    "variables": {
-        "iso_url": "https://mirrors.kernel.org/archlinux/iso/{{isotime \"2006.01\"}}.01/archlinux-{{isotime \"2006.01\"}}.01-x86_64.iso",
-        "iso_checksum_url": "https://mirrors.kernel.org/archlinux/iso/{{isotime \"2006.01\"}}.01/sha1sums.txt",
-        "guest_additions_url": "https://download.virtualbox.org/virtualbox/6.1.22/VBoxGuestAdditions_6.1.22.iso",
-        "guest_additions_sha256": "bffc316a7b8d5ed56d830e9f6aef02b4e5ffc28674032142e96ffbedd905f8c9",
-        "country": "US",
-        "config_user": "sensei-dre",
-        "config_zoneinfo": "America/New_York",
-        "config_country": "US",
-        "config_disk_size": "20000",
-        "config_memory": "2048",
-        "config_cpus": "2"
+  "variables": {
+    "iso_url": "https://mirrors.kernel.org/archlinux/iso/{{isotime \"2006.01\"}}.01/archlinux-{{isotime \"2006.01\"}}.01-x86_64.iso",
+    "iso_checksum_url": "https://mirrors.kernel.org/archlinux/iso/{{isotime \"2006.01\"}}.01/sha1sums.txt",
+    "guest_additions_url": "https://download.virtualbox.org/virtualbox/6.1.22/VBoxGuestAdditions_6.1.22.iso",
+    "guest_additions_sha256": "bffc316a7b8d5ed56d830e9f6aef02b4e5ffc28674032142e96ffbedd905f8c9",
+    "country": "US",
+    "config_user": "sensei-dre",
+    "config_zoneinfo": "America/New_York",
+    "config_country": "US",
+    "config_disk_size": "20000",
+    "config_memory": "2048",
+    "config_cpus": "2"
+  },
+  "builders": [
+    {
+      "type": "virtualbox-iso",
+      "name": "playground-arch",
+      "vm_name": "playground-arch",
+      "output_directory": "output/playground-arch",
+      "iso_url": "{{ user `iso_url` }}",
+      "iso_checksum": "file:{{ user `iso_checksum_url` }}",
+      "guest_os_type": "ArchLinux_64",
+      "guest_additions_mode": "upload",
+      "http_directory": "http",
+      "boot_wait": "5s",
+      "boot_command": [
+        "<enter><wait40>",
+        "echo root:packer | chpasswd<enter>",
+        "systemctl start sshd<enter>"
+      ],
+      "cpus": 2,
+      "memory": 2048,
+      "vboxmanage": [["modifyvm", "{{.Name}}", "--vram", "64"]],
+      "disk_size": 20480,
+      "hard_drive_interface": "sata",
+      "ssh_username": "root",
+      "ssh_password": "packer",
+      "ssh_port": 22,
+      "ssh_timeout": "3600s",
+      "shutdown_command": "echo 'root' | sudo -S shutdown -P now",
+      "guest_additions_url": "https://download.virtualbox.org/virtualbox/6.1.22/VBoxGuestAdditions_6.1.22.iso",
+      "guest_additions_sha256": "bffc316a7b8d5ed56d830e9f6aef02b4e5ffc28674032142e96ffbedd905f8c9",
+      "headless": "false",
+      "virtualbox_version_file": "VBoxVersion.txt"
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "scripts": ["http/playground.arch.sh"],
+      "timeout": "120m",
+      "start_retry_timeout": "15m",
+      "expect_disconnect": true,
+      "execute_command": "{{ .Vars }} sudo -E -S bash '{{ .Path }}'",
+      "environment_vars": ["CONFIG_USER={{ user `config_user` }}"]
     },
-    "builders": [
-        {
-            "type": "virtualbox-iso",
-            "name": "playground-arch",
-            "vm_name": "playground-arch",
-            "output_directory": "output/playground-arch",
-            "iso_url": "{{ user `iso_url` }}",
-            "iso_checksum": "file:{{ user `iso_checksum_url` }}",
-            "guest_os_type": "ArchLinux_64",
-            "guest_additions_mode": "upload",
-            "http_directory": "http",
-            "boot_wait": "5s",
-            "boot_command": [
-                "<tab><wait><tab><wait><tab><wait><tab><wait><tab><wait>",
-                "<tab><wait><tab><wait><tab><wait><tab><wait><tab><wait>",
-                "<tab><wait><tab><wait><tab><wait><tab><wait><tab><wait>",
-                "<tab><wait><tab><wait><tab><wait><tab><wait><tab><wait>",
-                "<tab><wait><tab><wait><tab><wait><tab><wait><tab><wait>",
-                "<tab><wait><tab><wait><tab><wait><tab><wait><tab><wait>",
-                "<tab><wait><tab><wait><tab><wait><tab><wait><tab><wait>",
-                "<tab><wait><tab><wait><tab><wait><tab><wait><tab><wait>",
-                "<tab><wait><tab><wait><tab><wait><tab><wait><tab><wait>",
-                "<tab><wait><tab><wait><tab><wait><tab><wait><tab><wait>",
-                "<tab><wait><tab><wait><tab><wait><tab><wait><tab><wait>",
-                "<tab><wait><tab><wait><tab><wait><tab><wait><tab><wait>",
-                "<spacebar>net.ifnames=0 biosdevname=0<enter>",
-                "<wait10><wait10><wait10><wait10><wait10><wait10>",
-                "echo root:packer | chpasswd<enter>",
-                "systemctl start sshd<enter>",
-                "<wait30>",
-                "curl -O 'http://{{.HTTPIP}}:{{.HTTPPort}}/playground.arch.vagrant{,.chroot}.sh'<enter><wait>",
-                "bash playground.arch.vagrant.sh < playground.arch.vagrant.chroot.sh && systemctl reboot<enter>"
-            ],
-            "cpus": 2,
-            "memory": 2048,
-            "vboxmanage": [
-                [
-                    "modifyvm",
-                    "{{.Name}}",
-                    "--vram",
-                    "64"
-                ]
-            ],
-            "disk_size": 20480,
-            "hard_drive_interface": "sata",
-            "ssh_username": "root",
-            "ssh_password": "packer",
-            "ssh_port": 22,
-            "ssh_timeout": "3600s",
-            "shutdown_command": "systemctl poweroff",
-            "guest_additions_url": "https://download.virtualbox.org/virtualbox/6.1.22/VBoxGuestAdditions_6.1.22.iso",
-            "guest_additions_sha256": "bffc316a7b8d5ed56d830e9f6aef02b4e5ffc28674032142e96ffbedd905f8c9",
-            "headless": "false",
-            "virtualbox_version_file": "VBoxVersion.txt"
-        }
-    ],
-    "provisioners": [
-        {
-            "scripts": [
-                "scripts/arch/pacman.sh"
-            ],
-            "type": "shell",
-            "timeout": "120m",
-            "execute_command": "{{ .Vars }} sudo -E -S bash '{{ .Path }}'",
-            "start_retry_timeout": "15m",
-            "expect_disconnect": "true",
-            "only": [
-                "playground-arch"
-            ]
-        },
-        {
-            "scripts": [
-                "scripts/arch/virtualbox.sh",
-                "scripts/arch/cleanup.sh"
-            ],
-            "type": "shell",
-            "timeout": "120m",
-            "execute_command": "{{ .Vars }} sudo -E -S bash '{{ .Path }}'",
-            "pause_before": "120s",
-            "start_retry_timeout": "15m",
-            "expect_disconnect": "true",
-            "only": [
-                "playground-arch"
-            ]
-        }
-    ],
-    "post-processors": [
-        {
-            "type": "vagrant",
-            "compression_level": 9,
-            "keep_input_artifact": false,
-            "vagrantfile_template": "arch_vagrant.rb",
-            "include": [
-                "info.json"
-            ],
-            "output": "output/playground_arch_{{ .Provider }}-{{isotime \"2006.01\"}}.01.box"
-        }
-    ]
+    {
+      "type": "shell",
+      "scripts": [
+        "provisioners/virtualbox.sh",
+        "provisioners/sshd.sh",
+        "provisioners/cleanup.sh"
+      ],
+      "timeout": "120m",
+      "pause_before": "120s",
+      "start_retry_timeout": "15m",
+      "execute_command": "{{ .Vars }} sudo -E -S bash '{{ .Path }}'",
+      "environment_vars": ["CONFIG_USER={{ user `config_user` }}"]
+    }
+  ],
+  "post-processors": [
+    {
+      "type": "vagrant",
+      "compression_level": 9,
+      "keep_input_artifact": false,
+      "output": "output/playground_arch_{{ .Provider }}-{{isotime \"2006.01\"}}.01.box"
+    }
+  ]
 }
