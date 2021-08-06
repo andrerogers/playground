@@ -101,7 +101,7 @@ install --directory --owner=${CONFIG_USER} --group=${CONFIG_USER} --mode=0700 /h
 
 echo ">>>> ${CONFIG_SCRIPT_SHORT}.arch.sh: set ssh conf settings at /etc/ssh/sshd_config.."
 sed -i -e "s/.*PermitRootLogin.*/PermitRootLogin yes/g" /etc/ssh/sshd_config
-echo 'UseDNS no' >> /etc/ssh/sshd_config
+sed -i 's/#UseDNS yes/UseDNS no/' /etc/ssh/sshd_config
 
 echo ">>>> ${CONFIG_SCRIPT_SHORT}.arch.sh: setup network .."
 mkdir -p /etc/systemd/network
