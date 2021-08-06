@@ -90,10 +90,27 @@ USER_HOME_DIR=/home/$USER
 echo ">>>> bootstrap.sh: Setting ssh key.."
 ROOT_SSH_DIR=/root/.ssh
 USER_SSH_DIR=$USER_HOME_DIR/.ssh
-# [ -d "$USER_SSH_DIR" ] && mv $ROOT_SSH_DIR/* $USER_SSH_DIR/ || mv $ROOT_SSH_DIR $USER_SSH_DIR 
-mv $ROOT_SSH_DIR/* $USER_SSH_DIR
 
-cat $USER_SSH_DIR/jarvis.pub >> $USER_SSH_DIR/authorized_keys
+pushd $ROOT_SSH_DIR
+  echo ">>>> bootstrap.sh: add jarvis.pub to authorized keys (root).."
+  cat jarvis.pub >> authorized_keys
+
+  echo ">>>> bootstrap.sh: add github.com to known_hosts (root).."
+  echo "github.com ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ==" >> known_hosts
+
+  chmod 600 jarvis
+
+  echo ">>>> bootstrap.sh: verify ssh agent (root).."
+  eval `ssh-agent -s`
+
+  echo ">>>> bootstrap.sh: add git key to ssh agent (root).."
+  ssh-add jarvis
+
+  echo ">>>> bootstrap.sh: Installing dot files.."
+  curl -Lsk https://tinyurl.com/test-setup-linux | bash -s $USER
+popd
+
+mv $ROOT_SSH_DIR/* $USER_SSH_DIR
 
 echo ">>>> bootstrap.sh: ensure ownership for ${USER} in home directory.."
 chown -R $USER:$USER $USER_HOME_DIR/.*
@@ -101,34 +118,22 @@ chown -R $USER:$USER $USER_HOME_DIR/.*
 echo ">>>> bootstrap.sh: ensure permissions for ${USER} in home directory.."
 chmod -R 777 $USER_HOME_DIR/.*
 
-echo ">>>> bootstrap.sh: add github.com to known_hosts.."
-echo "github.com ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ==" >> $USER_SSH_DIR/known_hosts
+pushd $USER_SSH_DIR
+  echo ">>>> bootstrap.sh: set appropriate permissions for git key ($USER).."
+  chmod 600 jarvis
 
-echo ">>>> bootstrap.sh: set appropriate permissions for git key.."
-chmod 600 $USER_SSH_DIR/jarvis
+  echo ">>>> bootstrap.sh: verify ssh agent ($USER).."
+  eval `ssh-agent -s`
 
-echo ">>>> bootstrap.sh: verify ssh agent.."
-eval `ssh-agent -s`
-
-echo ">>>> bootstrap.sh: add git key to ssh agent.."
-ssh-add $USER_SSH_DIR/jarvis
-
-# echo ">>>> bootstrap.sh: ratify ssh connection with git.."
-# ssh -oStrictHostKeyChecking=no -T git@github.com
+  echo ">>>> bootstrap.sh: add git key to ssh agent ($USER).."
+  ssh-add jarvis
+popd
 
 echo ">>>> bootstrap.sh: Installing OhMyZsh.."
 sudo -u $USER bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
 echo ">>>> bootstrap.sh: Installing powerlevel9k, ohmyzsh dependancy.."
 git clone https://github.com/bhilburn/powerlevel9k.git /home/$USER/.oh-my-zsh/custom/themes/powerlevel9k
-
-echo ">>>> bootstrap.sh: Installing dot files.."
-# sudo -u $USER curl -Lsk https://gist.githubusercontent.com/andrerogers/c2a4100f816ca837a0c819f13e719ca8/raw/5329764c2297c32cb316808265b99c81f12b0572/linux-setup.sh | bash -s $USER
-sudo -u $USER bash -c "curl -Lsk https://tinyurl.com/test-setup-linux | bash -s $USER" 
-# curl -Lsk https://tinyurl.com/playground-setup > config.sh
-# curl -Lsk https://tinyurl.com/test-setup-linux > config.sh
-# bash config.sh $USER
-# rm config.sh
 
 echo ">>>> bootstrap.sh: Configuring .xinitrc.."
 XINITRC_FILE=/home/$USER/.xinitrc

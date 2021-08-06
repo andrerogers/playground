@@ -72,11 +72,11 @@ Vagrant.configure("2") do |config|
 
   config.vm.provision "file" do |vb|
     vb.source = ".\\ssh\\."
-    vb.destination = "/home/sensei-dre/.ssh"
+    vb.destination = "/root/.ssh"
   end
 
   config.vm.provision "shell" do |vb| 
-    vb.path = ".\\provisioners\\bootstrap.sh"
+    vb.path = ".\\bootstrap\\bootstrap.sh"
     vb.env = {"USER" => "sensei-dre"}
   end
 
