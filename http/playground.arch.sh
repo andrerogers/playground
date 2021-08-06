@@ -83,9 +83,20 @@ echo root:packer | chpasswd
 
 echo ">>>> ${CONFIG_SCRIPT_SHORT}.arch.sh: add ${CONFIG_USER}.."
 useradd -m -p \$(openssl passwd -crypt "${CONFIG_USER}") ${CONFIG_USER}
+
+cat <<-SUDO > /etc/sudoers.d/${CONFIG_USER}
+Defaults:${CONFIG_USER} !requiretty
+${CONFIG_USER} ALL=(ALL) NOPASSWD: ALL
+SUDO
+
+chmod 440 /etc/sudoers.d/${CONFIG_USER}
+
+echo ">>>> ${CONFIG_SCRIPT_SHORT}.arch.sh: adding ${CONFIG_USER} to groups sudo, wheel and ${CONFIG_USER}.."
 usermod -a -G wheel ${CONFIG_USER}
-usermod -a -G vboxsf ${CONFIG_USER}
+usermod -a -G ${CONFIG_USER} ${CONFIG_USER} 
+
 sed '/^# %wheel ALL=(ALL) ALL/ s/^# //' -i /etc/sudoers
+
 install --directory --owner=${CONFIG_USER} --group=${CONFIG_USER} --mode=0700 /home/${CONFIG_USER}/.ssh
 
 echo ">>>> ${CONFIG_SCRIPT_SHORT}.arch.sh: set ssh conf settings at /etc/ssh/sshd_config.."

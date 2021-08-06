@@ -63,11 +63,7 @@
     },
     {
       "type": "shell",
-      "scripts": [
-        "provisioners/virtualbox.sh",
-        "provisioners/sshd.sh",
-        "provisioners/cleanup.sh"
-      ],
+      "scripts": ["provisioners/virtualbox.sh", "provisioners/cleanup.sh"],
       "pause_before": "180s",
       "environment_vars": [
         "HOSTNAME={{ user `config_hostname` }}",
