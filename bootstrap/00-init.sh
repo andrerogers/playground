@@ -25,12 +25,3 @@ pacman -Sy --noconfirm npm nodejs go
 
 echo ">>>> bootstrap.sh: Install TMUX.."
 pacman -Sy --noconfirm tmux
-ln -sf /home/$USER/.cfg/linux/.tmux/.tmux.conf /home/$USER/.tmux.conf
-ln -sf /home/$USER/.cfg/linux/.tmux/.tmux.conf.local /home/$USER/.tmux.conf.local
-
-# install docker
-# pacman -Sy --noconfirm docker
-
-# Install anaconda to manage python environments
-
-# Install NVM

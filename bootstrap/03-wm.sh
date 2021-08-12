@@ -44,6 +44,19 @@ Section "Screen"
 EndSection
 EOF
 
+USER_HOME=/home/$USER
+
 echo ">>>> bootstrap.sh: Setting URXVT extension path.."
-mkdir -p /home/$USER/.urxvt/ext
-cp -r /usr/lib/urxvt/perl/* /home/$USER/.urxvt/ext/
+mkdir -p $USER_HOME/.urxvt/ext
+cp -r /usr/lib/urxvt/perl/* $USER_HOME/.urxvt/ext/
+
+echo ">>>> bootstrap: linking to config.."
+ln -sf $USER_HOME/.cfg/linux/.config $USER_HOME/.config
+ln -sf $USER_HOME/.cfg/linux/.bashrc $USER_HOME/.bashrc
+ln -sf $USER_HOME/.cfg/linux/.Xresources $USER_HOME/.Xresources
+ln -sf $USER_HOME/.cfg/linux/.xinitrc $USER_HOME/.xinitrc
+ln -sf $USER_HOME/.cfg/linux/.urxvt $USER_HOME/.urxvt
+ln -sf $USER_HOME/.cfg/linux/.tmux $USER_HOME/.tmux
+ln -sf $USER_HOME/.cfg/linux/.lock.sh $USER_HOME/.lock.sh
+ln -sf $USER_HOME/.cfg/linux/.dmrc $USER_HOME/.dmrc
+ln -sf $USER_HOME/.cfg/linux/.dircolors $USER_HOME/.dircolors

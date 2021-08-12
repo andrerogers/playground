@@ -26,48 +26,52 @@ Vagrant.configure("2") do |config|
     vb.check_guest_additions = true
   end
 
-  config.vm.provision "file" do |vb|
+  config.vm.provision "provide-ssh", type: "file" do |vb|
     vb.source = "./ssh/."
     vb.destination = "/root/.ssh"
   end
 
-  config.vm.provision "shell" do |vb| 
+  config.vm.provision "provide-runit", type: "file" do |vb|
+    vb.source = "./runit.sh"
+    vb.destination = "/home/sensei-dre/runit.sh"
+  end
+
+  config.vm.provision "bootstrap-init", type: "shell" do |vb| 
     vb.path = "./bootstrap/00-init.sh"
     vb.env = {"USER" => "sensei-dre"}
   end
 
-  config.vm.provision "shell" do |vb| 
+  config.vm.provision "bootstrap-yay", type: "shell" do |vb| 
     vb.path = "./bootstrap/01-yay.sh"
     vb.env = {"USER" => "sensei-dre"}
   end
 
-  config.vm.provision "shell" do |vb| 
-    vb.path = "./bootstrap/02-zsh.sh"
+  config.vm.provision "bootstrap-env", type: "shell" do |vb| 
+    vb.path = "./bootstrap/02-env.sh"
     vb.env = {"USER" => "sensei-dre"}
   end
 
-  config.vm.provision "shell" do |vb| 
+  config.vm.provision "bootstrap-wm", type: "shell" do |vb| 
     vb.path = "./bootstrap/03-wm.sh"
     vb.env = {"USER" => "sensei-dre"}
   end
 
-  # TODO
-  # try executing the curl alone as none privvilleged after moving the ssh files
-  # echo ">>>> bootstrap.sh: Hot-load zsh env.."
-  # source /home/$USER/.zshrc
-
-
-  config.vm.provision "shell" do |vb| 
-    vb.path = "./bootstrap/04-env.sh"
+  config.vm.provision "bootstrap-zsh", type: "shell" do |vb| 
+    vb.path = "./bootstrap/04-zsh.sh"
     vb.env = {"USER" => "sensei-dre"}
   end
 
-  config.vm.provision "shell" do |vb| 
-    vb.path = "./bootstrap/05-emacs.sh"
+  config.vm.provision "bootstrap-tools", type: "shell" do |vb| 
+    vb.path = "./bootstrap/05-tools.sh"
     vb.env = {"USER" => "sensei-dre"}
   end
 
-  config.vm.provision "shell" do |vb| 
+  config.vm.provision "bootstrap-misc", type: "shell" do |vb| 
+    vb.path = "./bootstrap/06-misc.sh"
+    vb.env = {"USER" => "sensei-dre"}
+  end
+
+  config.vm.provision "bootstrap-fin", type: "shell" do |vb| 
     vb.path = "./bootstrap/fin.sh"
     vb.env = {"USER" => "sensei-dre"}
   end

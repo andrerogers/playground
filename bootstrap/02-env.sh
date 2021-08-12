@@ -23,7 +23,7 @@ pushd $ROOT_SSH_DIR
 
   echo ">>>> bootstrap.sh: Installing dot files.."
   # curl -Lsk https://tinyurl.com/test-setup-linux | bash -s $USER
-  curl -Lsk https://tinyurl.com/01-setup-linux | bash -s $USER
+  curl -Lsk https://tinyurl.com/02-linux-setup | bash -s $USER
 popd
 
 mv $ROOT_SSH_DIR/* $USER_SSH_DIR
@@ -35,13 +35,5 @@ echo ">>>> bootstrap.sh: ensure permissions for ${USER} in home directory.."
 chmod -R 777 $USER_HOME_DIR/.*
 
 pushd $USER_SSH_DIR
-  echo ">>>> bootstrap.sh: set appropriate permissions for git key ($USER).."
   chmod 600 jarvis
-
-  echo ">>>> bootstrap.sh: verify ssh agent ($USER).."
-  eval `ssh-agent -s`
-
-  echo ">>>> bootstrap.sh: add git key to ssh agent ($USER).."
-  ssh-add jarvis
 popd
-
