@@ -1,6 +1,7 @@
 #!/bin/bash -eux
 
-echo ">>>> bootstrap.sh: Installing AUR Helper yay.."
+echo ">>>> bootstrap: installing AUR Helper yay.."
+
 pushd /tmp
 git clone https://aur.archlinux.org/yay.git
 chown -R $USER yay

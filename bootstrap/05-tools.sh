@@ -1,12 +1,12 @@
 #!/bin/bash -eux
 
-echo ">>>> bootstrap.sh: Install Emacs IDE.."
+echo ">>>> bootstrap: install emacs.."
 pacman -Sy --noconfirm emacs
 
-echo ">>>> bootstrap.sh: Install Emacs Tools (Plugin Pre-reequistes).."
+echo ">>>> bootstrap: install emacs tools (plugin pre-reequistes).."
 pacman -Sy --noconfirm ripgrep
 
-echo ">>>> bootstrap.sh: install neovim.."
+echo ">>>> bootstrap: install neovim.."
 pacman -Sy --noconfirm vim neovim 
 
 # Install tools - pacman -Sy --noconfirm docker

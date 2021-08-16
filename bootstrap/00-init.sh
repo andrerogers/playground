@@ -1,27 +1,27 @@
 #!/bin/bash -eux
 
 # Set clock
-echo ">>>> bootstrap.sh: Setting clock.."
+echo ">>>> bootstrap: setting clock.."
 timedatectl set-ntp true
 hwclock --systohc --localtime
 
 # Update Arch database
-echo ">>>> bootstrap.sh: Updating pacman database.."
+echo ">>>> bootstrap: updating pacman database.."
 pacman -Syy
 
 # Update Arch
-echo ">>>> bootstrap.sh: Updating arch.."
+echo ">>>> bootstrap: updating arch.."
 pacman -Syu --noconfirm
 
 # Install packages
-echo ">>>> bootstrap.sh: Installing packages.."
-echo ">>>> bootstrap.sh: Installing util packages and libraries.."
+echo ">>>> bootstrap: installing packages.."
+echo ">>>> bootstrap: installing util packages and libraries.."
 pacman -Sy --noconfirm inetutils binutils make git gcc \
                        clang autoconf automake libtool w3m
 
 # Install languages 
-echo ">>>> bootstrap.sh: Install languages.."
+echo ">>>> bootstrap: install languages.."
 pacman -Sy --noconfirm npm nodejs go
 
-echo ">>>> bootstrap.sh: Install TMUX.."
+echo ">>>> bootstrap: install TMUX.."
 pacman -Sy --noconfirm tmux
