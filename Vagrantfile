@@ -21,7 +21,6 @@ Vagrant.configure("2") do |config|
 
   config.vm.provider "virtualbox" do |vb|
     vb.gui = true
-    vb.name = "playground"
     vb.linked_clone = true
     vb.check_guest_additions = true
   end
@@ -66,8 +65,13 @@ Vagrant.configure("2") do |config|
     vb.env = {"USER" => "sensei-dre"}
   end
 
+  config.vm.provision "bootstrap-audio", type: "shell" do |vb| 
+    vb.path = "./bootstrap/06-audio.sh"
+    vb.env = {"USER" => "sensei-dre"}
+  end
+
   config.vm.provision "bootstrap-misc", type: "shell" do |vb| 
-    vb.path = "./bootstrap/06-misc.sh"
+    vb.path = "./bootstrap/07-misc.sh"
     vb.env = {"USER" => "sensei-dre"}
   end
 

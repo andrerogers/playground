@@ -1,7 +1,7 @@
 {
   "variables": {
-    "iso_url": "https://mirrors.kernel.org/archlinux/iso/{{isotime \"2006.01\"}}.01/archlinux-{{isotime \"2006.01\"}}.01-x86_64.iso",
-    "iso_checksum_url": "https://mirrors.kernel.org/archlinux/iso/{{isotime \"2006.01\"}}.01/sha1sums.txt",
+    "iso_url": "https://mirrors.kernel.org/archlinux/iso/2021.08.01/archlinux-2021.08.01-x86_64.iso",
+    "iso_checksum_url": "https://mirrors.kernel.org/archlinux/iso/2021.08.01/sha1sums.txt",
     "guest_additions_url": "https://download.virtualbox.org/virtualbox/6.1.22/VBoxGuestAdditions_6.1.22.iso",
     "guest_additions_sha256": "bffc316a7b8d5ed56d830e9f6aef02b4e5ffc28674032142e96ffbedd905f8c9",
     "config_hostname": "playground",
@@ -10,7 +10,7 @@
     "config_country": "US",
     "config_disk_size": "20000",
     "config_memory": "2048",
-    "config_vram": "64",
+    "config_vram": "128",
     "config_cpus": "2"
   },
   "builders": [
@@ -34,7 +34,18 @@
       "memory": "{{ user `config_memory` }}",
       "disk_size": "{{ user `config_disk_size` }}",
       "vboxmanage": [
-        ["modifyvm", "{{.Name}}", "--vram", "{{ user `config_vram` }}"]
+        ["modifyvm", "{{.Name}}", "--help"],
+        ["modifyvm", "{{.Name}}", "--vram", "{{ user `config_vram` }}"],
+        ["modifyvm", "{{ .Name }}", "--accelerate3d", "on"],
+        ["modifyvm", "{{ .Name }}", "--accelerate2dvideo", "on"],
+        ["modifyvm", "{{ .Name }}", "--usb", "on"],
+        ["modifyvm", "{{ .Name }}", "--audio", "dsound"],
+        ["modifyvm", "{{ .Name }}", "--audiocontroller", "ac97"],
+        ["modifyvm", "{{ .Name }}", "--audioin", "on"],
+        ["modifyvm", "{{ .Name }}", "--audioout", "on"],
+        ["modifyvm", "{{ .Name }}", "--clipboard-mode", "bidirectional"],
+        ["modifyvm", "{{ .Name }}", "--draganddrop", "bidirectional"],
+        ["modifyvm", "{{ .Name }}", "--rtcuseutc", "on"]
       ],
       "hard_drive_interface": "sata",
       "ssh_username": "root",

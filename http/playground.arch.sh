@@ -47,7 +47,7 @@ curl -fsS "https://www.archlinux.org/mirrorlist/?country=all" > /tmp/mirrolist
 grep '^#Server' /tmp/mirrolist | grep "https" | sort -R | head -n 5 | sed 's/^#//' >> /etc/pacman.d/mirrorlist
 
 echo ">>>> playground.arch.sh: create a new system installation at ${TARGET_DIR}.."
-pacstrap ${TARGET_DIR} base base-devel linux grub bash sudo linux dhcpcd mkinitcpio gptfdisk openssh syslinux netctl git
+pacstrap ${TARGET_DIR} base base-devel linux bash sudo linux dhcpcd mkinitcpio openssh syslinux netctl networkmanager grub git
 
 echo ">>>> playground.arch.sh: enable swapping on ${DEVICE}1.."
 swapon "${DEVICE}1"
@@ -58,14 +58,14 @@ genfstab -p ${TARGET_DIR} >> ${TARGET_DIR}/etc/fstab
 echo ">>>> playground.arch.sh: disable swapping on ${DEVICE}1.."
 swapoff "${DEVICE}1"
 
-echo ">>>> playground.arch.sh: about to enter chroot.."
-
 echo ">>>> playground.arch.sh: generating the system configuration script.."
 install --mode=0755 /dev/null "${TARGET_DIR}${CONFIG_SCRIPT}"
 
 CONFIG_SCRIPT_SHORT=`basename "$CONFIG_SCRIPT"`
 cat <<-EOF > "${TARGET_DIR}${CONFIG_SCRIPT}"
 ln -sf /usr/share/zoneinfo/UTC /etc/localtime
+
+timedatectl set-timezone ${CONFIG_ZONE_INFO} 
 
 echo ">>>> ${CONFIG_SCRIPT_SHORT}.arch.sh: setting the hostname.."
 echo '${HOSTNAME}' > /etc/hostname
@@ -74,6 +74,12 @@ echo ">>>> ${CONFIG_SCRIPT_SHORT}.arch.sh: generating and setting lang conf.."
 sed -i -e 's/^#\(en_US.UTF-8\)/\1/' /etc/locale.gen
 locale-gen
 echo 'LANG=en_US.UTF-8' > /etc/locale.conf
+
+cat <<-HOSTS > /etc/hosts
+127.0.0.1   localhost
+::1         localhost
+127.0.1.1   ${HOSTNAME}
+HOSTS
 
 echo ">>>> ${CONFIG_SCRIPT_SHORT}.arch.sh: mkinitcpio => create inital RAMDISK.."
 mkinitcpio -p linux
@@ -104,23 +110,29 @@ sed -i -e "s/.*PermitRootLogin.*/PermitRootLogin yes/g" /etc/ssh/sshd_config
 sed -i 's/#UseDNS yes/UseDNS no/' /etc/ssh/sshd_config
 
 echo ">>>> ${CONFIG_SCRIPT_SHORT}.arch.sh: setup network .."
-mkdir -p /etc/systemd/network
-ln -sf /dev/null /etc/udev/rules.d/80-net-setup-link.rules
-ln -sf /dev/null /etc/systemd/network/99-default.link
+# mkdir -p /etc/systemd/network
+# ln -sf /dev/null /etc/udev/rules.d/80-net-setup-link.rules
+# ln -sf /dev/null /etc/systemd/network/99-default.link
 
-cat <<NET > /etc/systemd/network/eth0.network
-[Match]
-Name=eth0
+# cat <<NET > /etc/systemd/network/eth0.network
+# [Match]
+# Name=eth0
 
-[Network]
-DHCP=ipv4
-NET
+# [Network]
+# DHCP=ipv4
+# NET
 
-echo ">>>> ${CONFIG_SCRIPT_SHORT}.arch.sh: enable dhcpcd@eth0.service .."
-systemctl enable dhcpcd@eth0.service
+# echo ">>>> ${CONFIG_SCRIPT_SHORT}.arch.sh: enable dhcpcd@eth0.service .."
+# systemctl enable dhcpcd@eth0.service
 
-echo ">>>> ${CONFIG_SCRIPT_SHORT}.arch.sh: enable systemd-networkd.service .."
-systemctl enable systemd-networkd
+# echo ">>>> ${CONFIG_SCRIPT_SHORT}.arch.sh: enable systemd-networkd.service .."
+# systemctl enable systemd-networkd
+
+echo ">>>> ${CONFIG_SCRIPT_SHORT}.arch.sh: enable NetworkManager.service .."
+systemctl enable NetworkManager.service
+
+echo ">>>> ${CONFIG_SCRIPT_SHORT}.arch.sh: enable dhcpcd.service .."
+systemctl enable dhcpcd.service
 
 echo ">>>> ${CONFIG_SCRIPT_SHORT}.arch.sh: enable sshd.service .."
 systemctl enable sshd.service

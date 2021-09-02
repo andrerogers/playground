@@ -11,7 +11,7 @@ echo ">>>> bootstrap: installing i3.."
 pacman -Sy --noconfirm i3-wm
 
 echo ">>>> bootstrap: installing i3 dependancy, dejavu font.."
-pacman -S --noconfirm ttf-dejavu # i3 dependancy
+pacman -S --noconfirm ttf-dejavu ttf-font-awesome # i3 dependancy
 
 echo ">>>> bootstrap: installing Fira Code font.."
 pacman -Sy --noconfirm ttf-fira-code
@@ -50,21 +50,20 @@ echo ">>>> bootstrap: setting urxvt extension path.."
 mkdir -p $USER_HOME/.urxvt/ext
 cp -r /usr/lib/urxvt/perl/* $USER_HOME/.urxvt/ext/
 
-echo ">>>> bootstrap: installing lightdm.."
-pacman -Sy --noconfirm lightdm lightdm-gtk-greeter accountsservice 
+# echo ">>>> bootstrap: installing lightdm.."
+# pacman -Sy --noconfirm lightdm lightdm-gtk-greeter accountsservice 
 
-echo ">>>> bootstrap: set default lightdm greeter to lightdm-webkit2-greeter.."
-sudo -u $USER yay -S --noconfirm lightdm-webkit2-theme-glorious
-sudo sed -i 's/^\(#?greeter\)-session\s*=\s*\(.*\)/greeter-session = lightdm-webkit2-greeter #\1/ #\2g' /etc/lightdm/lightdm.conf
+# echo ">>>> bootstrap: set default lightdm greeter to lightdm-webkit2-greeter.."
+# sudo -u $USER yay -S --noconfirm lightdm-webkit2-theme-glorious
+# sudo sed -i 's/^\(#?greeter\)-session\s*=\s*\(.*\)/greeter-session = lightdm-webkit2-greeter #\1/ #\2g' /etc/lightdm/lightdm.conf
 
+# echo ">>>> bootstrap: set default lightdm-webkit2-greeter theme to glorious.."
+# sudo sed -i 's/^webkit_theme\s*=\s*\(.*\)/webkit_theme = glorious #\1/g' /etc/lightdm/lightdm-webkit2-greeter.conf
+# sudo sed -i 's/^debug_mode\s*=\s*\(.*\)/debug_mode = true #\1/g' /etc/lightdm/lightdm-webkit2-greeter.conf
 
-echo ">>>> bootstrap: set default lightdm-webkit2-greeter theme to glorious.."
-sudo sed -i 's/^webkit_theme\s*=\s*\(.*\)/webkit_theme = glorious #\1/g' /etc/lightdm/lightdm-webkit2-greeter.conf
-sudo sed -i 's/^debug_mode\s*=\s*\(.*\)/debug_mode = true #\1/g' /etc/lightdm/lightdm-webkit2-greeter.conf
-
-echo ">>>> bootstrap: enable lightdm.."
-systemctl enable lightdm.service
-systemctl start lightdm.service
+# echo ">>>> bootstrap: enable lightdm.."
+# systemctl enable lightdm.service
+# systemctl start lightdm.service
 
 echo ">>>> bootstrap: linking to config.."
 ln -sf $USER_HOME/.cfg/linux/.config $USER_HOME/.config
