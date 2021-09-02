@@ -1,5 +1,8 @@
 #!/bin/bash -eux
 
+# TODO
+# put an if else clause to check if headless
+
 echo ">>>> bootstrap: installing Xorg.."
 pacman -Sy --noconfirm xorg \
        xorg-server-xwayland xorg-server-common \
