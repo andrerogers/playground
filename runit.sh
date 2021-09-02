@@ -24,9 +24,6 @@ config branch --set-upstream-to=origin/master master
 config pull origin master
 config push --set-upstream origin master
 
-echo ">>>> runit.sh: starting emacs in daemon mode [server].."
-systemctl --user enable --now emacs
-
 echo ">>>> runit.sh: remove runit.."
 mv $HOME/runit.sh /tmp
 
