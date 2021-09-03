@@ -4,6 +4,7 @@
     "iso_checksum_url": "https://mirrors.kernel.org/archlinux/iso/2021.08.01/sha1sums.txt",
     "guest_additions_url": "https://download.virtualbox.org/virtualbox/6.1.22/VBoxGuestAdditions_6.1.22.iso",
     "guest_additions_sha256": "bffc316a7b8d5ed56d830e9f6aef02b4e5ffc28674032142e96ffbedd905f8c9",
+    "config_headless": "false",
     "config_hostname": "playground",
     "config_user": "sensei-dre",
     "config_zoneinfo": "America/New_York",
@@ -34,13 +35,12 @@
       "memory": "{{ user `config_memory` }}",
       "disk_size": "{{ user `config_disk_size` }}",
       "vboxmanage": [
-        ["modifyvm", "{{.Name}}", "--help"],
         ["modifyvm", "{{.Name}}", "--vram", "{{ user `config_vram` }}"],
         ["modifyvm", "{{ .Name }}", "--accelerate3d", "on"],
         ["modifyvm", "{{ .Name }}", "--accelerate2dvideo", "on"],
         ["modifyvm", "{{ .Name }}", "--usb", "on"],
         ["modifyvm", "{{ .Name }}", "--audio", "dsound"],
-        ["modifyvm", "{{ .Name }}", "--audiocontroller", "ac97"],
+        ["modifyvm", "{{ .Name }}", "--audiocontroller", "hda"],
         ["modifyvm", "{{ .Name }}", "--audioin", "on"],
         ["modifyvm", "{{ .Name }}", "--audioout", "on"],
         ["modifyvm", "{{ .Name }}", "--clipboard-mode", "bidirectional"],
@@ -55,7 +55,7 @@
       "shutdown_command": "echo 'root' | sudo -S shutdown -P now",
       "guest_additions_url": "{{ user `guest_additions_url` }}",
       "guest_additions_sha256": "{{  user `guest_additions_sha256`  }}",
-      "headless": "false",
+      "headless": "{{ user `config_headless` }}",
       "virtualbox_version_file": "VBoxVersion.txt"
     }
   ],

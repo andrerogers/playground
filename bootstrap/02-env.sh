@@ -2,6 +2,9 @@
 
 USER_HOME_DIR=/home/$USER
 
+echo ">>>> bootstrap: enabling ssh daemon.."
+systemctl enable sshd
+
 echo ">>>> bootstrap: setting ssh key.."
 ROOT_SSH_DIR=/root/.ssh
 USER_SSH_DIR=$USER_HOME_DIR/.ssh
