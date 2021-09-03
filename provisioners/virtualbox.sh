@@ -15,6 +15,10 @@ echo -e 'vboxguest\nvboxsf\nvboxvideo' > /etc/modules-load.d/virtualbox.conf
 echo ">>>> virtualbox.sh: Add groups for VirtualBox folder sharing.."
 usermod --append --groups vboxsf $CONFIG_USER 
 
+echo ">>>> virtualbox.sh: Add groups for VirtualBox devices.."
+groupadd vboxusers
+usermod --append --groups vboxusers $CONFIG_USER
+
 echo ">>>> virtualbox.sh: Enabling VirtualBox Guest service.."
 systemctl enable vboxservice.service
 systemctl start vboxservice.service

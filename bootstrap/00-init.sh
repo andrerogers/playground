@@ -17,7 +17,8 @@ pacman -Syu --noconfirm
 echo ">>>> bootstrap: installing packages.."
 echo ">>>> bootstrap: installing util packages and libraries.."
 pacman -Sy --noconfirm inetutils binutils make git gcc \
-                       clang autoconf automake libtool w3m
+                       clang autoconf automake libtool \
+                       usbutils w3m
 
 # Install languages 
 echo ">>>> bootstrap: install languages.."
