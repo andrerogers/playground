@@ -1,7 +1,4 @@
-#!/bin/bash
-
-set -e
-set -x
+#!/bin/bash -eux
 
 TARGET_DIR='/mnt'
 CONFIG_SCRIPT='/usr/local/bin/arch-config.sh'
