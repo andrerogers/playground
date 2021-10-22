@@ -8,7 +8,9 @@ echo ">>>> playground.arch.sh: detect block device type.."
 if [ -e /dev/vda ]; then
   DEVICE=/dev/vda
 elif [ -e /dev/sda ]; then
-  DEVICE=/dev/sda
+  device=/dev/sda
+elif [ -e /dev/nvme0n1 ]; then
+  device=/dev/nvme0n1
 else
   echo "ERROR: There is no disk available for installation" >&2
   exit 1

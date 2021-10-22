@@ -67,16 +67,3 @@ cp -r /usr/lib/urxvt/perl/* $USER_HOME/.urxvt/ext/
 # echo ">>>> bootstrap: enable lightdm.."
 # systemctl enable lightdm.service
 # systemctl start lightdm.service
-
-echo ">>>> bootstrap: linking to config.."
-ln -sf $USER_HOME/.cfg/linux/.config $USER_HOME/.config
-ln -sf $USER_HOME/.cfg/linux/.bashrc $USER_HOME/.bashrc
-ln -sf $USER_HOME/.cfg/linux/.Xresources $USER_HOME/.Xresources
-ln -sf $USER_HOME/.cfg/linux/.xinitrc $USER_HOME/.xinitrc
-ln -sf $USER_HOME/.cfg/linux/.urxvt $USER_HOME/.urxvt
-ln -sf $USER_HOME/.cfg/linux/.tmux/.tmux.conf $USER_HOME/.tmux.conf
-ln -sf $USER_HOME/.cfg/linux/.tmux/.tmux.conf.loca1 $USER_HOME/.tmux.conf.local
-ln -sf $USER_HOME/.cfg/linux/.lock.sh $USER_HOME/.lock.sh
-ln -sf $USER_HOME/.cfg/linux/.grab-lockscreen.sh $USER_HOME/.grab-lockscreen.sh
-ln -sf $USER_HOME/.cfg/linux/.dmrc $USER_HOME/.dmrc
-ln -sf $USER_HOME/.cfg/linux/.dircolors $USER_HOME/.dircolors

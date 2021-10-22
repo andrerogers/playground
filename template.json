@@ -10,8 +10,8 @@
     "config_zoneinfo": "America/New_York",
     "config_country": "US",
     "config_disk_size": "20000",
-    "config_memory": "2048",
-    "config_vram": "128",
+    "config_memory": "4096",
+    "config_vram": "256",
     "config_cpus": "2"
   },
   "builders": [

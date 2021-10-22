@@ -21,8 +21,18 @@ pacman -Sy --noconfirm inetutils binutils make git gcc \
                        usbutils w3m
 
 # Install languages 
-echo ">>>> bootstrap: install languages.."
-pacman -Sy --noconfirm npm nodejs go
+echo ">>>> bootstrap: install npm and node for javascript.."
+pacman -Sy --noconfirm npm nodejs
+
+echo ">>>> bootstrap: install golang.."
+pacman -Sy --noconfirm go
+
+echo ">>>> bootstrap: install javascript compilers via npm.."
+sudo -u $USER npm install -g typescript solc 
+
+echo ">>>> bootstrap: install javascript linters via npm.."
+sudo -u $USER npm install -g eslint prettier 
+ 
 
 echo ">>>> bootstrap: install TMUX.."
 pacman -Sy --noconfirm tmux
