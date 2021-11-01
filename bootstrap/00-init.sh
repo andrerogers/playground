@@ -28,11 +28,10 @@ echo ">>>> bootstrap: install golang.."
 pacman -Sy --noconfirm go
 
 echo ">>>> bootstrap: install javascript compilers via npm.."
-sudo -u $USER npm install -g typescript solc 
+npm install -g typescript solc ethlint 
 
 echo ">>>> bootstrap: install javascript linters via npm.."
-sudo -u $USER npm install -g eslint prettier 
- 
+npm install -g eslint prettier 
 
 echo ">>>> bootstrap: install TMUX.."
 pacman -Sy --noconfirm tmux

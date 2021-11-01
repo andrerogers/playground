@@ -27,7 +27,8 @@
       "http_directory": "http",
       "boot_wait": "5s",
       "boot_command": [
-        "<enter><wait40>",
+        "<enter><wait10><wait10><wait10><wait10>",
+        "<enter><wait10><wait10><wait10><wait10>",
         "echo root:packer | chpasswd<enter>",
         "systemctl start sshd<enter>"
       ],

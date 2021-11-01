@@ -8,9 +8,9 @@ echo ">>>> playground.arch.sh: detect block device type.."
 if [ -e /dev/vda ]; then
   DEVICE=/dev/vda
 elif [ -e /dev/sda ]; then
-  device=/dev/sda
+  DEVICE=/dev/sda
 elif [ -e /dev/nvme0n1 ]; then
-  device=/dev/nvme0n1
+  DEVICE=/dev/nvme0n1
 else
   echo "ERROR: There is no disk available for installation" >&2
   exit 1
@@ -46,7 +46,7 @@ curl -fsS "https://www.archlinux.org/mirrorlist/?country=all" > /tmp/mirrolist
 grep '^#Server' /tmp/mirrolist | grep "https" | sort -R | head -n 5 | sed 's/^#//' >> /etc/pacman.d/mirrorlist
 
 echo ">>>> playground.arch.sh: create a new system installation at ${TARGET_DIR}.."
-pacstrap ${TARGET_DIR} base base-devel linux bash sudo linux dhcpcd mkinitcpio openssh syslinux netctl networkmanager grub git
+pacstrap ${TARGET_DIR} base base-devel linux bash sudo linux dhcpcd mkinitcpio intel-ucode openssh syslinux netctl networkmanager grub git
 
 echo ">>>> playground.arch.sh: enable swapping on ${DEVICE}1.."
 swapon "${DEVICE}1"

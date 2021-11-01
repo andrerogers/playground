@@ -2,10 +2,10 @@
 
 figlet -tkc -w 100 -f ivrit "playground"; figlet -tk -f script "welcome to playground"; figlet -tkc -w 100 -f standard $USER; screenfetch
 
-echo ">>>> runit.sh: verify ssh agent (root).."
+echo ">>>> runit.sh: verify ssh agent.."
 eval `ssh-agent -s`
 
-echo ">>>> runit.sh: add git key to ssh agent (root).."
+echo ">>>> runit.sh: add git key to ssh agent.."
 ssh-add $HOME/.ssh/jarvis
 
 echo ">>>> runit.sh: testing git access.."
