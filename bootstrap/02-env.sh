@@ -48,8 +48,6 @@ ln -sf $USER_HOME_DIR/.cfg/linux/.Xresources $USER_HOME_DIR/.Xresources
 ln -sf $USER_HOME_DIR/.cfg/linux/.xinitrc $USER_HOME_DIR/.xinitrc
 ln -sf $USER_HOME_DIR/.cfg/linux/.urxvt $USER_HOME_DIR/.urxvt
 ln -sf $USER_HOME_DIR/.cfg/linux/.tmux/.tmux.conf $USER_HOME_DIR/.tmux.conf
-ln -sf $USER_HOME_DIR/.cfg/linux/.tmux/.tmux.conf.loca1 $USER_HOME_DIR/.tmux.conf.local
 ln -sf $USER_HOME_DIR/.cfg/linux/.lock.sh $USER_HOME_DIR/.lock.sh
 ln -sf $USER_HOME_DIR/.cfg/linux/.grab-lockscreen.sh $USER_HOME_DIR/.grab-lockscreen.sh
 ln -sf $USER_HOME_DIR/.cfg/linux/.dmrc $USER_HOME_DIR/.dmrc
-ln -sf $USER_HOME_DIR/.cfg/linux/.dircolors $USER_HOME_DIR/.dircolors
