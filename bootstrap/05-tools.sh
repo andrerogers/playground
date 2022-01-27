@@ -18,6 +18,7 @@ USER_HOME=/home/$USER
 echo ">>>> bootstrap: linking to config.."
 ln -sf $USER_HOME/.cfg/emacs/emacs.el $USER_HOME/.emacs.el
 ln -s $USER_HOME/.cfg/emacs/.emacs.d $USER_HOME/.emacs.d
+ln -sf $USER_HOME/.cfg/emacs/emacsctl.sh $USER_HOME/.emacsctl.sh
 
 echo ">>>> bootstrap: add desktop entries for emacs server and client.."
 cat <<-EMACSSERVER > /usr/share/applications/emacsserver.desktop
