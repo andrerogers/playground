@@ -1,5 +1,8 @@
 #!/bin/bash -eux
 
+echo ">>>> bootstrap: install flycheck.."
+sudo -u $USER yay -S --noconfirm flycheck
+
 echo ">>>> bootstrap: install emacs.."
 pacman -Sy --noconfirm emacs
 
